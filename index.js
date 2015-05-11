@@ -3,11 +3,15 @@ var through = require('through2')
 var isStream = require('isstream')
 var eos = require('end-of-stream')
 
-module.exports = function () {
+module.exports = function (options) {
+  options = options || {}
+
   var stream = through()
   var queue = []
   var hasSet = false
   var processing = false
+
+  stream.end = stream.end.bind(stream, '}')
 
   stream.set = function (key, value) {
     var obj = key
@@ -79,8 +83,7 @@ module.exports = function () {
         processQueue()
       } else {
         processing = false
-        stream.push('}')
-        stream.emit('end')
+        if (options.end !== false) stream.end()
       }
     }
   }

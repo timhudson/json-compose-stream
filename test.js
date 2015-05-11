@@ -1,12 +1,12 @@
 var test = require('tape')
-var jsonObjectWriteStream = require('./')
+var jsonComposeStream = require('./')
 var from = require('from2')
 var concat = require('concat-stream')
 
 test('json-compose-stream', function (t) {
   t.plan(1)
 
-  var stream = jsonObjectWriteStream()
+  var stream = jsonComposeStream()
 
   stream.pipe(concat(function (results) {
     t.deepEqual(JSON.parse(results.toString()), {
@@ -31,7 +31,7 @@ test('json-compose-stream', function (t) {
 test('streams and values', function (t) {
   t.plan(1)
 
-  var stream = jsonObjectWriteStream()
+  var stream = jsonComposeStream()
 
   stream.pipe(concat(function (results) {
     t.deepEqual(JSON.parse(results), {
@@ -44,6 +44,16 @@ test('streams and values', function (t) {
   fromString('abcdefghijklmnopqrstuvwxyz').pipe(stream.createSetStream('alpha'))
   fromString('0123456789').pipe(stream.createSetStream('numeric'))
   stream.set({el: 'duderino'})
+})
+
+test('do not end if options.end equals false', function (t) {
+  t.plan(1)
+
+  var stream = jsonComposeStream({end: false})
+
+  stream.on('finish', t.ok.bind(t, true))
+  stream.set('test', 'end')
+  stream.end()
 })
 
 function fromString (string) {
