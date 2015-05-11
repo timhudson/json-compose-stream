@@ -67,8 +67,12 @@ module.exports = function (options) {
         done()
       })
 
-      value.pipe(through(function (chunk, end, callback) {
-        stream.push(chunk)
+      value.pipe(through(function (chunk, enc, callback) {
+        stream.push(
+          JSON.stringify(chunk.toString())
+            .replace(/^"/, '')
+            .replace(/"$/, '')
+          )
         callback()
       }))
 

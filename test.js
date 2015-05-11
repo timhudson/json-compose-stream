@@ -46,6 +46,22 @@ test('streams and values', function (t) {
   stream.set({el: 'duderino'})
 })
 
+test('properly encode JSON values', function (t) {
+  t.plan(1)
+
+  var stream = jsonComposeStream()
+
+  stream.pipe(concat(function (results) {
+    t.deepEqual(JSON.parse(results), {
+      encodedSet: '\" encoded quotes \"',
+      encodedSetStream: '\" encoded quotes \"'
+    }, 'encodes JSON values')
+  }))
+
+  fromString('" encoded quotes "').pipe(stream.createSetStream('encodedSetStream'))
+  stream.set('encodedSet', '" encoded quotes "')
+})
+
 test('do not end if options.end equals false', function (t) {
   t.plan(1)
 
