@@ -1,6 +1,6 @@
 {
   "name": "json-compose-stream",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Compose valid JSON output from any number of streams or values",
   "main": "index.js",
   "scripts": {
